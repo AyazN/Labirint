@@ -5,12 +5,15 @@ pygame.init()
 win = pygame.display.set_mode((800, 600))
 win.fill((0, 180, 210))
 
+
 class Background(pygame.sprite.Sprite):
     def __init__(self, image_file, location):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load(image_file)
         self.rect = self.image.get_rect()
         self.rect.left, self.rect.top = location
+
+
 class Button():
     def __init__(self, color, x, y, width, height, text=''):
         self.color = color
@@ -30,7 +33,7 @@ class Button():
             font = pygame.font.SysFont('comicsans', 60)
             text = font.render(self.text, 1, (0, 0, 0))
             win.blit(text, (
-            self.x + (self.width / 2 - text.get_width() / 2), self.y + (self.height / 2 - text.get_height() / 2)))
+                self.x + (self.width / 2 - text.get_width() / 2), self.y + (self.height / 2 - text.get_height() / 2)))
 
     def isOver(self, pos):
         if pos[0] > self.x and pos[0] < self.x + self.width:
@@ -39,23 +42,18 @@ class Button():
 
         return False
 
-
-def redrawWindow():
-    win.fill([255, 255, 255])
-    win.blit(BackGround.image, BackGround.rect)
-    green_button.draw(win, (0, 0, 0))
-    red_button.draw(win, (0, 0, 0))
-    info_button.draw(win, (0,0,0))
-
 run = True
 green_button = Button((0, 255, 0), 280, 150, 250, 100, "Start")
 red_button = Button((255, 0, 0), 280, 275, 250, 100, "Quit")
 info_button = Button(pygame.Color('Yellow'), 280, 395, 250, 100, 'Info')
-BackGround = Background('/Users/norbi273cool/PycharmProjects/YanexLyceum/data/main_menu_1.jpg', [0,0])
+BackGround = Background('data/main_menu_1.jpg', [0, 0])
 
 while run:
-    redrawWindow()
-
+    win.fill([255, 255, 255])
+    win.blit(BackGround.image, BackGround.rect)
+    green_button.draw(win, (0, 0, 0))
+    red_button.draw(win, (0, 0, 0))
+    info_button.draw(win, (0, 0, 0))
     for event in pygame.event.get():
         pos = pygame.mouse.get_pos()
 
