@@ -2,6 +2,7 @@
 # 02.01 сделана мини-игра крестики-нолики
 
 import pygame
+from random import randint
 
 WIDTH = 1200
 HEIGHT = 800
@@ -16,6 +17,7 @@ class NoughtsCrosses:
         self.width = width
         self.height = height
         self.board = [[BLACK] * width for _ in range(height)]
+        self.robot = Robot(self.board)
         self.set_view(left, top, cell_size)
 
     def set_view(self, left, top, cell_size):
@@ -29,21 +31,24 @@ class NoughtsCrosses:
             for col in range(self.width):
                 pygame.draw.rect(screen, 'White', (self.left + col * self.cell_size,
                                  self.top + row * self.cell_size, self.cell_size, self.cell_size), 1)
-                if self.board[row][col] == BLUE:
-                    pygame.draw.line(screen, COLORS[self.board[row][col]],
-                                     (col * self.cell_size + 2 * ots + self.left, row * self.cell_size + ots + self.top),
-                                     ((col + 1) * self.cell_size - 2 * ots + self.left,
-                                     (row + 1) * self.cell_size - 2 * ots + self.top), width=7)
-                    pygame.draw.line(screen, COLORS[self.board[row][col]],
-                                     ((col + 1) * self.cell_size - 2 * ots + self.left,
-                                     row * self.cell_size + ots + self.top),
-                                     (col * self.cell_size + 2 * ots + self.left,
-                                     (row + 1) * self.cell_size - 2 * ots + self.top), width=7)
-                if self.board[row][col] == RED:
-                    pygame.draw.circle(screen, COLORS[self.board[row][col]],
-                                       ((col + 0.5) * self.cell_size + self.left,
-                                       (row + 0.5) * self.cell_size + self.top),
-                                       self.cell_size / 2 - ots, width=7)
+                self.draw_moves(screen, row, col, ots)
+
+    def draw_moves(self, screen, row, col, ots):
+        if self.board[row][col] == BLUE:
+            pygame.draw.line(screen, COLORS[self.board[row][col]],
+                             (col * self.cell_size + 2 * ots + self.left, row * self.cell_size + ots + self.top),
+                             ((col + 1) * self.cell_size - 2 * ots + self.left,
+                              (row + 1) * self.cell_size - 2 * ots + self.top), width=7)
+            pygame.draw.line(screen, COLORS[self.board[row][col]],
+                             ((col + 1) * self.cell_size - 2 * ots + self.left,
+                              row * self.cell_size + ots + self.top),
+                             (col * self.cell_size + 2 * ots + self.left,
+                              (row + 1) * self.cell_size - 2 * ots + self.top), width=7)
+        if self.board[row][col] == RED:
+            pygame.draw.circle(screen, COLORS[self.board[row][col]],
+                               ((col + 0.5) * self.cell_size + self.left,
+                                (row + 0.5) * self.cell_size + self.top),
+                               self.cell_size / 2 - ots, width=7)
 
     def get_click(self, mouse_pos):
         cell = self.get_cell(mouse_pos)
@@ -60,10 +65,10 @@ class NoughtsCrosses:
             col, row = cell[0], cell[1]
             if self.board[row][col] == BLACK:
                 self.board[row][col] = BLUE
-                self.move_bot()
-
-    def move_bot(self):
-        pass
+                if not self.is_win(BLUE):
+                    self.robot.set_board(self.board)
+                    self.robot.move()
+                    self.board = self.robot.get_board()
 
     def is_win(self, color):
         set_elements = set()
@@ -87,6 +92,52 @@ class NoughtsCrosses:
                 if self.board[row][col] == BLACK:
                     return False
         return True
+
+
+class Robot:
+    def __init__(self, board):
+        self.set_board(board)
+
+    def set_board(self, board):
+        self.board = board
+
+    def move(self):
+        horisontal = self.horizontal_move()
+        if not horisontal:
+            vertical = self.vertical_move()
+            if not vertical:
+                diagonal = self.diagonal_move()
+                if not diagonal:
+                    self.random_move()
+
+    def horizontal_move(self):
+        return False
+
+    def vertical_move(self):
+        return False
+
+    def diagonal_move(self):
+        return False
+
+    def random_move(self):
+        while True:
+            row, col = randint(0, 2), randint(0, 2)
+            if self.board[row][col] == BLACK:
+                self.board[row][col] = RED
+                return
+
+    def get_board(self):
+        return self.board
+
+    def get_elements_board(self):
+        set_elements = set()
+        i = 1
+        for row in range(len(self.board)):
+            for col in range(len(self.board[row])):
+                if self.board[row][col] == BLUE:
+                    set_elements.add(i)
+                i += 1
+        return set_elements
 
 
 def main_noughts_crosses():
@@ -116,4 +167,4 @@ def main_noughts_crosses():
 
 
 if __name__ == '__main__':
-    main_noughts_crosses()
+    print(main_noughts_crosses())
