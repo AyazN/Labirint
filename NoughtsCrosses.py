@@ -65,7 +65,7 @@ class NoughtsCrosses:
             col, row = cell[0], cell[1]
             if self.board[row][col] == BLACK:
                 self.board[row][col] = BLUE
-                if not self.is_win(BLUE):
+                if not self.is_win(BLUE) and not self.is_drawn_game():
                     self.robot.set_board(self.board)
                     self.robot.move()
                     self.board = self.robot.get_board()
@@ -111,12 +111,39 @@ class Robot:
                     self.random_move()
 
     def horizontal_move(self):
+        for row in range(len(self.board)):
+            if self.board[row].count(BLUE) == 2 or self.board[row].count(RED) == 2:
+                for col in range(len(self.board[row])):
+                    if self.board[row][col] == BLACK:
+                        self.board[row][col] = RED
+                        return True
         return False
 
     def vertical_move(self):
+        new_board = [[BLACK] * len(self.board[row]) for row in range(len(self.board))]
+        for row in range(len(self.board)):
+            for col in range(len(self.board[row])):
+                new_board[col][row] = self.board[row][col]
+        for row in range(len(new_board)):
+            if new_board[row].count(BLUE) == 2 or new_board[row].count(RED) == 2:
+                for col in range(len(new_board[row])):
+                    if new_board[row][col] == BLACK:
+                        self.board[col][row] = RED
+                        return True
         return False
 
     def diagonal_move(self):
+        set_elements = self.get_elements_board()
+        if {1, 5} <= set_elements or {1, 9} <= set_elements or {5, 9} <= set_elements:
+            for i in range(len(self.board)):
+                if self.board[i][i] == BLACK:
+                    self.board[i][i] = RED
+                    return True
+        if {3, 5} <= set_elements or {5, 7} <= set_elements or {3, 7} <= set_elements:
+            for i in range(len(self.board)):
+                if self.board[i][len(self.board) - i - 1] == BLACK:
+                    self.board[i][len(self.board) - i - 1] = RED
+                    return True
         return False
 
     def random_move(self):
@@ -144,7 +171,7 @@ def main_noughts_crosses():
     pygame.init()
     size = WIDTH, HEIGHT
     screen = pygame.display.set_mode(size)
-    pygame.display.set_caption('Крестики-нолики')
+    pygame.display.set_caption('Мини-игра "Крестики-нолики"')
     noughts_crosses = NoughtsCrosses(3, 3)
     running = True
     while running:
