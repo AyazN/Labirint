@@ -180,15 +180,17 @@ def main_noughts_crosses():
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 noughts_crosses.get_click(event.pos)
-        if noughts_crosses.is_win(BLUE):
-            pygame.quit()
-            return True
-        if noughts_crosses.is_win(RED) or noughts_crosses.is_drawn_game():
-            pygame.quit()
-            return False
         screen.fill((0, 0, 0))
         noughts_crosses.render(screen)
         pygame.display.flip()
+        if noughts_crosses.is_win(BLUE):
+            pygame.time.delay(1000)
+            pygame.quit()
+            return True
+        if noughts_crosses.is_win(RED) or noughts_crosses.is_drawn_game():
+            pygame.time.delay(1000)
+            pygame.quit()
+            return False
     pygame.quit()
     return False
 
