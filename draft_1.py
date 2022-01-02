@@ -42,10 +42,11 @@ class Button():
 
         return False
 
+
 run = True
-green_button = Button((0, 255, 0), 280, 150, 250, 100, "Start")
-red_button = Button((255, 0, 0), 280, 275, 250, 100, "Quit")
-info_button = Button(pygame.Color('Yellow'), 280, 395, 250, 100, 'Info')
+green_button = Button((0, 255, 0), 180, 175, 450, 100, "Начать игру")
+red_button = Button((255, 0, 0), 270, 285, 250, 100, "Выход")
+info_button = Button(pygame.Color('Yellow'), 75, 395, 650, 100, 'Информация об игре')
 BackGround = Background('data/main_menu_1.jpg', [0, 0])
 
 while run:
