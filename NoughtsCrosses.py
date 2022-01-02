@@ -15,9 +15,8 @@ class NoughtsCrosses:
     def __init__(self, width, height, left=300, top=100, cell_size=200):
         self.width = width
         self.height = height
-        self.board = [[0] * width for _ in range(height)]
+        self.board = [[BLACK] * width for _ in range(height)]
         self.set_view(left, top, cell_size)
-        self.move = BLUE
 
     def set_view(self, left, top, cell_size):
         self.left = left
@@ -59,12 +58,35 @@ class NoughtsCrosses:
     def on_click(self, cell):
         if cell:
             col, row = cell[0], cell[1]
-            if self.board[row][col] == BLACK and self.move == BLUE:
+            if self.board[row][col] == BLACK:
                 self.board[row][col] = BLUE
-                self.move = RED
-            elif self.board[row][col] == BLACK and self.move == RED:
-                self.board[row][col] = RED
-                self.move = BLUE
+                self.move_bot()
+
+    def move_bot(self):
+        pass
+
+    def is_win(self, color):
+        set_elements = set()
+        i = 1
+        for row in range(self.height):
+            for col in range(self.width):
+                if self.board[row][col] == color:
+                    set_elements.add(i)
+                i += 1
+        if {1, 2, 3} <= set_elements or {4, 5, 6} <= set_elements or {7, 8, 9} <= set_elements:
+            return True
+        if {1, 4, 7} <= set_elements or {2, 5, 8} <= set_elements or {3, 6, 9} <= set_elements:
+            return True
+        if {1, 5, 9} <= set_elements or {3, 5, 7} <= set_elements:
+            return True
+        return False
+
+    def is_drawn_game(self):
+        for row in range(self.height):
+            for col in range(self.width):
+                if self.board[row][col] == BLACK:
+                    return False
+        return True
 
 
 def main_noughts_crosses():
@@ -72,17 +94,26 @@ def main_noughts_crosses():
     size = WIDTH, HEIGHT
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption('Крестики-нолики')
-    board = NoughtsCrosses(3, 3)
+    noughts_crosses = NoughtsCrosses(3, 3)
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                board.get_click(event.pos)
+                noughts_crosses.get_click(event.pos)
+        if noughts_crosses.is_win(BLUE):
+            pygame.quit()
+            return True
+        if noughts_crosses.is_win(RED) or noughts_crosses.is_drawn_game():
+            pygame.quit()
+            return False
         screen.fill((0, 0, 0))
-        board.render(screen)
+        noughts_crosses.render(screen)
         pygame.display.flip()
+    pygame.quit()
+    return False
 
 
-main_noughts_crosses()
+if __name__ == '__main__':
+    main_noughts_crosses()
