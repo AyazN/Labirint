@@ -1,3 +1,5 @@
+# сделал Мухаметзянов Дамир
+
 from settings import *
 from random import *
 from function_sql import *
