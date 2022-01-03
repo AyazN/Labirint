@@ -1,3 +1,5 @@
+# сделал Мухаметзянов Дамир
+
 import pygame
 import random
 from function_sql import *
