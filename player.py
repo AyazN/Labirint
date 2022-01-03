@@ -1,3 +1,5 @@
+# сделал Мухаметзянов Дамир
+
 import random
 from settings import *
 import pygame
