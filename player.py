@@ -1,3 +1,5 @@
+import random
+from settings import *
 import pygame
 import os
 import sys
@@ -30,33 +32,77 @@ def load_level(filename):
 
 
 def generate_level(level):
-    new_player, x, y = None, None, None
+    new_player, new_enemy, x, y = None, None, None, None
     for y in range(len(level)):
         for x in range(len(level[y])):
             if level[y][x] == 'N':
-                continue
-            elif level[y][x] == '.':
                 Tile('empty', x, y)
-            elif level[y][x] == '#':
+            if level[y][x] == '.':
+                Tile('empty', x, y)
+            if level[y][x] == 'F':
+                Tile('empty', x, y)
+                Tile('frame', x, y)
+                fires.append((x, y))
+            elif level[y][x] == 'G':
+                Tile('nulls', x, y)
+                nulls.append([x, y])
+            elif level[y][x] == 'T':
                 Tile('wall', x, y)
                 walls.append((x, y))
             elif level[y][x] == 'X':
-                Tile('empty', x, y)
                 Tile('em', x, y)
+                castle.append([x, y])
+    for y in range(len(level)):
+        for x in range(len(level[y])):
+            if level[y][x] == 'N':
+                new_enemy = Enemy(x, y)
     for y in range(len(level)):
         for x in range(len(level[y])):
             if level[y][x] == '@':
                 Tile('empty', x, y)
                 new_player = Player(x, y)
-    return new_player, x, y
+    return new_player, new_enemy, x, y
+
+
+def is_free(position):
+    return position not in walls
+
+
+def find_path_step(start, target):
+    INF = 1000
+    x, y = start
+    distance = [[INF] * COLS for _ in range(ROWS)]
+    distance[y][x] = 0
+    prev = [[None] * COLS for _ in range(ROWS)]
+    queue = [(x, y)]
+    while queue:
+        x, y = queue.pop(0)
+        for dx, dy in (1, 0), (0, 1), (-1, 0), (0, -1):
+            next_x, next_y = x + dx, y + dy
+            if 0 <= next_x < COLS and 0 <= next_y < ROWS and \
+                    is_free((next_x, next_y)) and distance[next_y][next_x] == INF:
+                distance[next_y][next_x] = distance[y][x] + 1
+                prev[next_y][next_x] = (x, y)
+                queue.append((next_x, next_y))
+    x, y = target
+    if distance[y][x] == 0:
+        return start
+    while prev[y][x] != start:
+        x, y = prev[y][x]
+    return x, y
 
 
 tile_images = {
-    'wall': load_image('box.png'),
-    'empty': load_image('grass.png'),
-    'em': load_image('castle.jpg')
+    'wall': load_image('wall_box.png'),
+    'empty': load_image('ground.png'),
+    'em': load_image('door.png'),
+    'enemy': load_image('enemy.png'),
+    'frame': load_image('frame.png'),
+    'fire': load_image('fire.png'),
+    'nulls': load_image('mini.png')
 }
-player_image = load_image('mario.png')
+player_image = load_image('king.png')
+enemy_image = load_image('enemy.png')
 
 player = None
 
@@ -64,8 +110,12 @@ all_sprites = pygame.sprite.Group()
 tiles_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
 walls = []
+fires = []
+nulls = []
+castle = []
 
 tile_width = tile_height = 50
+cords = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
 
 class Tile(pygame.sprite.Sprite):
@@ -93,3 +143,38 @@ class Player(pygame.sprite.Sprite):
             self.rect = self.image.get_rect().move(
                 tile_width * self.pos_x + 15, tile_height * self.pos_y + 5)
 
+    def get_pos(self):
+        return [self.pos_x, self.pos_y]
+
+
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y):
+        super().__init__(player_group, all_sprites)
+        self.image = enemy_image
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.start_pos = (pos_x, pos_y)
+        self.rect = self.image.get_rect().move(
+            tile_width * pos_x + 15, tile_height * pos_y + 5)
+
+    def enemy_move(self, player_pos, flag):
+        x, y = find_path_step((self.pos_x, self.pos_y), Player.get_pos(player_pos))
+        if not flag:
+            self.pos_x = x
+            self.pos_y = y
+        self.rect = self.image.get_rect().move(
+            tile_width * self.pos_x + 15, tile_height * self.pos_y + 5)
+
+    def collision_check(self, player_pos):
+        return Player.get_pos(player_pos) == [self.pos_x, self.pos_y]
+
+    def collision_check_with_fire(self, player_pos):
+        x, y = Player.get_pos(player_pos)
+        return (x, y) in fires
+
+    def get_pos(self):
+        return [[self.pos_x, self.pos_y], [self.pos_x + 1, self.pos_y], [self.pos_x, self.pos_y + 1],
+                [self.pos_x - 1, self.pos_y], [self.pos_x, self.pos_y - 1]]
+
+    def start_pos_rt(self):
+        return self.start_pos
