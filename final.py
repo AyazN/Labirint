@@ -1,3 +1,5 @@
+# сделал Мухаметзянов Дамир
+
 from settings import *
 from player import *
 import pygame
