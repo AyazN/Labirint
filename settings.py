@@ -1,6 +1,3 @@
-# сделал Мухаметзянов Дамир
-
-
 RES = WIDTH, HEIGHT = 1250, 850
 RES_MENU = (800, 600)
 TILE = 50
@@ -21,3 +18,21 @@ ENEMY_Y = 'enemy_y'
 MAP = 'map'
 LOGIN = 'login'
 PASSWORD = 'password'
+FONT_RES = 130
+GOLD = (255, 204, 0)
+RED_COLOR = (255, 0, 0)
+ONE_OF_THREE = 3
+OME_OF_FOUR = 4
+ONE_ITERATION = 1
+ONE_COORD = 1
+ZERO = 0
+ONE = 1
+SPAWN_PLAYER = (1, 1)
+SPAWN_ENEMY = (23, 1)
+MOVE_LEFT = -1, 0
+MOVE_RIGHT = 1, 0
+MOVE_UP = 0, -1
+MOVE_DOWN = 0, 1
+BIG_ITERATION = 100
+SMALL_ITERATION = 25
+NUM_FIRE_FACE = 2
