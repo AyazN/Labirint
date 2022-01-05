@@ -3,8 +3,8 @@ from settings import *
 from function_sql import *
 from main import main_play
 from gen_map import run
-from draft import *
-from draft_1 import *
+from genad import *
+from connect_db import *
 
 class Background(pygame.sprite.Sprite):
     def __init__(self, image_file, location):
