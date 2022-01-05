@@ -1,3 +1,5 @@
+import time
+import tkinter
 from tkinter import *
 import sqlite3
 import random
@@ -11,11 +13,10 @@ def register():
     global password_entry
     register_screen = Toplevel(main_screen)
     register_screen.title("Регистрация")
-    register_screen.geometry("500x200")
+    register_screen.geometry("500x300")
     username = StringVar()
     password = StringVar()
-
-    Label(register_screen, text="Придумайте логин и пароль", bg="black").pack()
+    Label(register_screen, text="Придумайте логин и пароль").pack()
     Label(register_screen, text="").pack()
     username_lable = Label(register_screen, text="Логин")
     username_lable.pack()
@@ -26,7 +27,7 @@ def register():
     password_entry = Entry(register_screen, textvariable=password, show='*')
     password_entry.pack()
     Label(register_screen, text="").pack()
-    Button(register_screen, text="Регистрация", width=10, height=1, bg="black", command=register_user).pack()
+    Button(register_screen, text="Регистрация", width=10, height=1, bg="white", command=register_user).pack()
 
 
 def login():
@@ -53,25 +54,6 @@ def login():
     password_login_entry.pack()
     Label(login_screen, text="").pack()
     Button(login_screen, text="Логин", width=10, height=1, command=login_verify).pack()
-
-def register_user():
-    username_info = username.get()
-    password_info = password.get()
-    random_id = random.randint(1000, 9999)
-
-    sqlite_insert = '''INSERT INTO accounts
-                    (id, login, password)
-                    VALUES (?, ?, ?);'''
-    data_tuple = (random_id, username_info, password_info)
-    cur.execute(sqlite_insert, data_tuple)
-    con.commit()
-
-    username_entry.delete(0, END)
-    password_entry.delete(0, END)
-
-    Label(register_screen, text="Регистрация прошла успешна", fg="green", font=("calibri", 11)).pack()
-
-
 def login_verify():
     username1 = username_verify.get()
     password1 = password_verify.get()
@@ -86,11 +68,10 @@ def login_verify():
     prov_user = []
     prov_pass = []
     for row in records:
-        for i in range(len(records)):
-            prov_user.append(row[i])
+        prov_user.append(str(row[0]))
     for row_1 in records_1:
-        for q in range(len(records_1)):
-            prov_pass.append(row_1[q])
+        prov_pass.append(str(row_1[0]))
+    print(prov_pass, prov_user, len(prov_user), len(prov_pass), len(records), len(records_1))
     if username1 in prov_user:
         if password1 in prov_pass:
             login_sucess()
@@ -98,14 +79,46 @@ def login_verify():
             password_not_recognised()
     else:
         user_not_found()
+def register_user():
+    prov_user = []
+    check_username = '''SELECT login from accounts'''
+    cur.execute(check_username)
+    records = cur.fetchall()
+    for row in records:
+        prov_user.append(str(row[0]))
+    username_info = username.get()
+    password_info = password.get()
+    if (len(password_info) == 0 or len(username_info) == 0):
+        Label(register_screen, text='Пустая строчка', fg='red', font=('calibri', 11)).pack()
+    elif username_info in prov_user:
+        Label(register_screen, text='Пользователь с таким логином уже существует', fg='red', font=('calibri', 11)).pack()
+    else:
+        random_id = random.randint(1000, 9999)
+        sqlite_insert = '''INSERT INTO accounts
+                        (id, login, password)
+                        VALUES (?, ?, ?);'''
+        data_tuple = (random_id, username_info, password_info)
+        cur.execute(sqlite_insert, data_tuple)
+        con.commit()
+
+        username_entry.delete(0, END)
+        password_entry.delete(0, END)
+        Label(register_screen, text="Регистрация прошла успешна", fg="green", font=("calibri", 11)).pack()
 
 
+def check_empty_window():
+    global empty_check
+    empty_check = Toplevel(login_screen)
+    empty_check.title("Успешно")
+    empty_check.geometry("1500x100")
+    Label(empty_check, text="Логин и пароль сошелся").pack()
+    Button(empty_check, text="OK", command=delete_check).pack()
 def login_sucess():
     global login_success_screen
     login_success_screen = Toplevel(login_screen)
     login_success_screen.title("Успешно")
     login_success_screen.geometry("150x100")
-    Label(login_success_screen, text="Логин сошелся").pack()
+    Label(login_success_screen, text="Логин и пароль сошелся").pack()
     Button(login_success_screen, text="OK", command=delete_login_success).pack()
 
 
@@ -127,8 +140,8 @@ def user_not_found():
 
 def delete_login_success():
     login_success_screen.destroy()
-
-
+def delete_check():
+    empty_check.destroy()
 def delete_password_not_recognised():
     password_not_recog_screen.destroy()
 
@@ -147,3 +160,4 @@ def main_account_screen():
     Button(text="Регистрация", height="2", width="30", command=register).pack()
 
     main_screen.mainloop()
+main_account_screen()
