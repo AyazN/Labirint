@@ -3,14 +3,8 @@ from settings import *
 from function_sql import *
 from main import main_play
 from gen_map import run
-
-
-class Background(pygame.sprite.Sprite):
-    def __init__(self, image_file, location):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(image_file)
-        self.rect = self.image.get_rect()
-        self.rect.left, self.rect.top = location
+from drawing_fon import draw_menu_fon
+from registration import *
 
 
 class Button:
@@ -42,7 +36,6 @@ class Button:
 
 
 def redraw_window(screen):
-    screen.blit(BackGround.image, BackGround.rect)
     green_button.draw(screen, (0, 0, 0))
     red_button.draw(screen, (0, 0, 0))
     info_button.draw(screen, (0, 0, 0))
@@ -51,7 +44,6 @@ def redraw_window(screen):
 green_button = Button((0, 255, 0), WIDTH // 2 - 225, 225, 450, 100, "Начать игру")
 red_button = Button((255, 0, 0), WIDTH // 2 - 125, 345, 250, 100, "Выход")
 info_button = Button(pygame.Color('Yellow'), WIDTH // 2 - 325, 465, 650, 100, 'Загрузить игру')
-BackGround = Background('data/labirint_mini.png', [0, 0])
 
 
 def start_menu_game(running, user_id):
@@ -92,10 +84,12 @@ def start_menu_game(running, user_id):
                 else:
                     info_button.color = pygame.Color('Yellow')
         screen.fill((255, 255, 255))
+        draw_menu_fon()
         redraw_window(screen)
         pygame.display.flip()
     main_play(flag, user_id)
     pygame.quit()
 
 
-start_menu_game(True, 2)
+main_account_screen()
+start_menu_game(True, num)
