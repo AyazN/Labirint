@@ -48,7 +48,7 @@ info_button = Button(pygame.Color('Yellow'), WIDTH // 2 - 325, 465, 650, 100, 'Ð
 
 def start_menu_game(running, user_id):
     pygame.init()
-    screen = pygame.display.set_mode((RES[0] - TILE, RES[1]))
+    screen = pygame.display.set_mode(RES)
     flag = False
     while running:
         for event in pygame.event.get():
