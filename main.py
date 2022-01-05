@@ -30,6 +30,14 @@ def main_play(running, user_id):
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                if enemy.collision_check(player) and not img_kill:
+                    add_new_save(user_id, player.get_pos()[0], player.get_pos()[1], enemy.start_pos_rt()[0],
+                                 enemy.start_pos_rt()[1],
+                                 select_map_id(open_map()))
+                else:
+                    add_new_save(user_id, player.get_pos()[0], player.get_pos()[1], enemy.get_pos()[0][0],
+                                 enemy.get_pos()[0][1],
+                                 select_map_id(open_map()))
                 running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
@@ -49,7 +57,7 @@ def main_play(running, user_id):
             pygame.display.flip()
             running = False
             continue
-        if player.get_pos() == nulls[0]:
+        if bool(nulls) and player.get_pos() == nulls[0]:
             if not main_noughts_crosses():
                 dead = True
                 play_alt(True, user_id, num_exit, total, num, dead, img_kill, img_fire, win, killing, player.get_pos(),
@@ -97,4 +105,13 @@ def main_play(running, user_id):
         total += 1
         pygame.display.flip()
         clock.tick(FPS)
+    if enemy.collision_check(player) and not img_kill:
+        add_new_save(user_id, player.get_pos()[0], player.get_pos()[1], enemy.start_pos_rt()[0],
+                     enemy.start_pos_rt()[1],
+                     select_map_id(open_map()))
+    else:
+        add_new_save(user_id, player.get_pos()[0], player.get_pos()[1], enemy.get_pos()[0][0],
+                     enemy.get_pos()[0][1],
+                     select_map_id(open_map()))
     pygame.quit()
+
