@@ -1,7 +1,7 @@
 import pygame
 from random import choice
 
-RES = WIDTH, HEIGHT = 1202, 902
+RES = WIDTH, HEIGHT = 1252, 852
 TILE = 50
 cols, rows = WIDTH // TILE, HEIGHT // TILE
 
