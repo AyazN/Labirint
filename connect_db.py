@@ -3,7 +3,7 @@ import tkinter
 from tkinter import *
 import sqlite3
 import random
-con = sqlite3.connect(r'C:\Users\Амир\PycharmProjects\labirint\SQL\labirint_db.db')
+con = sqlite3.connect(r'/SQL/labirint_db.db')
 cur = con.cursor()
 def register():
     global register_screen
