@@ -1,9 +1,10 @@
 import pygame
-from connect_db import *
-pygame.init()
-win = pygame.display.set_mode((800, 600))
-win.fill((0, 180, 210))
-
+from settings import *
+from function_sql import *
+from main import main_play
+from gen_map import run
+from draft import *
+from draft_1 import *
 
 class Background(pygame.sprite.Sprite):
     def __init__(self, image_file, location):
@@ -13,7 +14,7 @@ class Background(pygame.sprite.Sprite):
         self.rect.left, self.rect.top = location
 
 
-class Button():
+class Button:
     def __init__(self, color, x, y, width, height, text=''):
         self.color = color
         self.x = x
@@ -30,68 +31,71 @@ class Button():
 
         if self.text != '':
             font = pygame.font.SysFont('comicsans', 60)
-            text = font.render(self.text, 1, (0, 0, 0))
+            text = font.render(self.text, False, (0, 0, 0))
             win.blit(text, (
                 self.x + (self.width / 2 - text.get_width() / 2), self.y + (self.height / 2 - text.get_height() / 2)))
 
-    def isOver(self, pos):
-        if pos[0] > self.x and pos[0] < self.x + self.width:
-            if pos[1] > self.y and pos[1] < self.y + self.height:
+    def is_over(self, pos):
+        if self.x < pos[0] < self.x + self.width:
+            if self.y < pos[1] < self.y + self.height:
                 return True
-
         return False
 
 
-run = True
-green_button = Button((0, 255, 0), 180, 175, 450, 100, "Начать игру")
-red_button = Button((255, 0, 0), 270, 285, 250, 100, "Выход")
-info_button = Button(pygame.Color('Yellow'), 75, 395, 650, 100, 'Информация об игре')
-registr_button = Button(pygame.Color('red'), 100, 500, 650, 100, 'Регистрация')
-BackGround = Background('data/main_menu_1.jpg', [0, 0])
+def redraw_window(screen):
+    green_button.draw(screen, (0, 0, 0))
+    red_button.draw(screen, (0, 0, 0))
+    info_button.draw(screen, (0, 0, 0))
 
-while run:
-    win.fill([255, 255, 255])
-    win.blit(BackGround.image, BackGround.rect)
-    green_button.draw(win, (0, 0, 0))
-    red_button.draw(win, (0, 0, 0))
-    info_button.draw(win, (0, 0, 0))
-    registr_button.draw(win, (0,0,0))
-    for event in pygame.event.get():
-        pos = pygame.mouse.get_pos()
 
-        if event.type == pygame.QUIT:
-            run = False
-            pygame.quit()
-            quit()
+green_button = Button((0, 255, 0), WIDTH // 2 - 225, 225, 450, 100, "Начать игру")
+red_button = Button((255, 0, 0), WIDTH // 2 - 125, 345, 250, 100, "Выход")
+info_button = Button(pygame.Color('Yellow'), WIDTH // 2 - 325, 465, 650, 100, 'Загрузить игру')
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if green_button.isOver(pos):
-                print("clicked the Button")
-            if red_button.isOver(pos):
-                print("clicked the 2Button")
-                run = False
-                pygame.quit()
-                quit()
-            if info_button.isOver(pos):
-                print('clicked info_button')
-            if registr_button.isOver(pos):
-                main_account_screen()
 
-        if event.type == pygame.MOUSEMOTION:
-            if green_button.isOver(pos):
-                green_button.color = (105, 105, 105)
-            else:
-                green_button.color = (0, 255, 0)
-            if red_button.isOver(pos):
-                red_button.color = (105, 105, 105)
-            else:
-                red_button.color = (255, 0, 0)
-            if info_button.isOver(pos):
-                info_button.color = pygame.Color('grey')
-            else:
-                info_button.color = pygame.Color('violet')
-            if registr_button.isOver(pos):
-                registr_button.color = pygame.Color('grey')
-            else:
-                registr_button.color = pygame.Color('yellow')
-    pygame.display.update()
+def start_menu_game(running, user_id):
+    pygame.init()
+    screen = pygame.display.set_mode(RES)
+    flag = False
+    while running:
+        for event in pygame.event.get():
+            pos = pygame.mouse.get_pos()
+
+            if event.type == pygame.QUIT:
+                running = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if green_button.is_over(pos):
+                    run()
+                    running = False
+                    flag = True
+                if red_button.is_over(pos):
+                    print("clicked the 2Button")
+                    running = False
+                if info_button.is_over(pos):
+                    reconstruct_map(user_id)
+                    running = False
+                    flag = True
+                    print('clicked info_button')
+            if event.type == pygame.MOUSEMOTION:
+                if green_button.is_over(pos):
+                    green_button.color = (105, 105, 105)
+                else:
+                    green_button.color = (0, 255, 0)
+                if red_button.is_over(pos):
+                    red_button.color = (105, 105, 105)
+                else:
+                    red_button.color = (255, 0, 0)
+                if info_button.is_over(pos):
+                    info_button.color = pygame.Color('grey')
+                else:
+                    info_button.color = pygame.Color('Yellow')
+        screen.fill((255, 255, 255))
+        genadi()
+        redraw_window(screen)
+        pygame.display.flip()
+    main_play(flag, user_id)
+    pygame.quit()
+
+
+start_menu_game(True, 2)
