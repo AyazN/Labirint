@@ -3,7 +3,7 @@ import tkinter
 from tkinter import *
 import sqlite3
 import random
-con = sqlite3.connect('labirint_db.db')
+con = sqlite3.connect(r'C:\Users\Амир\PycharmProjects\labirint\SQL\labirint_db.db')
 cur = con.cursor()
 def register():
     global register_screen
@@ -71,7 +71,6 @@ def login_verify():
         prov_user.append(str(row[0]))
     for row_1 in records_1:
         prov_pass.append(str(row_1[0]))
-    print(prov_pass, prov_user, len(prov_user), len(prov_pass), len(records), len(records_1))
     if username1 in prov_user:
         if password1 in prov_pass:
             login_sucess()
