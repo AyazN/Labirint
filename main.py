@@ -4,11 +4,21 @@ from function_sql import *
 import pygame
 from settings import *
 from mini_game import main_noughts_crosses
-from function import save_game
 from final import *
 from player import *
 
 num_exit = 0
+
+
+def save_game(enemy, player, img_kill, user_id):
+    if enemy.collision_check(player) and not img_kill:
+        add_new_save(user_id, player.get_pos()[0], player.get_pos()[1], enemy.start_pos_rt()[0],
+                     enemy.start_pos_rt()[1],
+                     select_map_id(open_map()))
+    else:
+        add_new_save(user_id, player.get_pos()[0], player.get_pos()[1], enemy.get_pos()[0][0],
+                     enemy.get_pos()[0][1],
+                     select_map_id(open_map()))
 
 
 def redraw_new_window(screen, dead, win, enemy, player, img_kill, user_id):
@@ -101,5 +111,6 @@ def main_play(running, user_id, player_pos=(1, 1), enemy_pos=(23, 1), play_nulls
         clock.tick(FPS)
     save_game(enemy, player, img_kill, user_id)
     pygame.quit()
+
 
 
