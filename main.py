@@ -70,13 +70,13 @@ def main_play(running, user_id, player_pos=SPAWN_PLAYER, enemy_pos=SPAWN_ENEMY, 
                 running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    player.player_move(MOVE_LEFT)
+                    player.player_move(MOVE_LEFT_X, MOVE_LEFT_Y)
                 if event.key == pygame.K_RIGHT:
-                    player.player_move(MOVE_RIGHT)
+                    player.player_move(MOVE_RIGHT_X, MOVE_RIGHT_Y)
                 if event.key == pygame.K_UP:
-                    player.player_move(MOVE_UP)
+                    player.player_move(MOVE_UP_X, MOVE_UP_Y)
                 if event.key == pygame.K_DOWN:
-                    player.player_move(MOVE_DOWN)
+                    player.player_move(MOVE_DOWN_X, MOVE_DOWN_Y)
                 if event.key == pygame.K_SPACE and player.get_pos() in enemy.get_pos():
                     enemy.image = load_image('kill.png')
                     img_kill = True
