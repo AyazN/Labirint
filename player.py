@@ -15,8 +15,8 @@ def load_image(name, color_key=None):
     image = pygame.image.load(fullname)
     if color_key is not None:
         image = image.convert()
-        if color_key == -1:
-            color_key = image.get_at((0, 0))
+        if color_key == KEY:
+            color_key = image.get_at(NULLS_CORDS)
             image.set_colorkey(color_key)
     return image
 
@@ -71,23 +71,23 @@ def is_free(position):
 
 
 def find_path_step(start, target):
-    INF = 1000
+    INF = ITERATION_TICK
     x, y = start
     distance = [[INF] * COLS for _ in range(ROWS)]
-    distance[y][x] = 0
+    distance[y][x] = ZERO
     prev = [[None] * COLS for _ in range(ROWS)]
     queue = [(x, y)]
     while queue:
-        x, y = queue.pop(0)
+        x, y = queue.pop(ZERO)
         for dx, dy in (1, 0), (0, 1), (-1, 0), (0, -1):
             next_x, next_y = x + dx, y + dy
-            if 0 <= next_x < COLS and 0 <= next_y < ROWS and \
+            if ZERO <= next_x < COLS and ZERO <= next_y < ROWS and \
                     is_free((next_x, next_y)) and distance[next_y][next_x] == INF:
-                distance[next_y][next_x] = distance[y][x] + 1
+                distance[next_y][next_x] = distance[y][x] + ONE_ITERATION
                 prev[next_y][next_x] = (x, y)
                 queue.append((next_x, next_y))
     x, y = target
-    if distance[y][x] == 0:
+    if distance[y][x] == ZERO:
         return start
     while prev[y][x] != start:
         x, y = prev[y][x]
@@ -111,13 +111,10 @@ player = None
 all_sprites = pygame.sprite.Group()
 tiles_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
-walls = []
-fires = []
-nulls = []
-castle = []
+walls, fires, nulls, castle = [], [], [], []
 
-tile_width = tile_height = 50
-cords = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+tile_width = tile_height = TILE
+cords = ALL_CORDS_MOVE
 
 
 class Tile(pygame.sprite.Sprite):
@@ -135,15 +132,15 @@ class Player(pygame.sprite.Sprite):
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.rect = self.image.get_rect().move(
-            tile_width * pos_x + 15, tile_height * pos_y + 5)
+            tile_width * pos_x + RECT_PLAYER_WIDTH, tile_height * pos_y + RECT_PLAYER_HEIGHT)
 
     def player_move(self, x, y):
         if (self.pos_x + x, self.pos_y + y) not in walls \
-                and -1 < self.pos_x + x < 24 and -1 < self.pos_y + y < 16:
+                and -ONE < self.pos_x + x < CELL_WIDTH and -ONE < self.pos_y + y < CELL_HEIGHT:
             self.pos_x += x
             self.pos_y += y
             self.rect = self.image.get_rect().move(
-                tile_width * self.pos_x + 15, tile_height * self.pos_y + 5)
+                tile_width * self.pos_x + RECT_PLAYER_WIDTH, tile_height * self.pos_y + RECT_PLAYER_HEIGHT)
 
     def get_pos(self):
         return [self.pos_x, self.pos_y]
@@ -157,7 +154,7 @@ class Enemy(pygame.sprite.Sprite):
         self.pos_y = pos_y
         self.start_pos = (pos_x, pos_y)
         self.rect = self.image.get_rect().move(
-            tile_width * pos_x + 15, tile_height * pos_y + 5)
+            tile_width * pos_x + RECT_PLAYER_WIDTH, tile_height * pos_y + RECT_PLAYER_HEIGHT)
 
     def enemy_move(self, player_pos, flag):
         x, y = find_path_step((self.pos_x, self.pos_y), Player.get_pos(player_pos))
@@ -165,7 +162,7 @@ class Enemy(pygame.sprite.Sprite):
             self.pos_x = x
             self.pos_y = y
         self.rect = self.image.get_rect().move(
-            tile_width * self.pos_x + 15, tile_height * self.pos_y + 5)
+            tile_width * self.pos_x + RECT_PLAYER_WIDTH, tile_height * self.pos_y + RECT_PLAYER_HEIGHT)
 
     def collision_check(self, player_pos):
         return Player.get_pos(player_pos) == [self.pos_x, self.pos_y]
@@ -175,8 +172,8 @@ class Enemy(pygame.sprite.Sprite):
         return (x, y) in fires
 
     def get_pos(self):
-        return [[self.pos_x, self.pos_y], [self.pos_x + 1, self.pos_y], [self.pos_x, self.pos_y + 1],
-                [self.pos_x - 1, self.pos_y], [self.pos_x, self.pos_y - 1]]
+        return [[self.pos_x, self.pos_y], [self.pos_x + ONE, self.pos_y], [self.pos_x, self.pos_y + ONE],
+                [self.pos_x - ONE, self.pos_y], [self.pos_x, self.pos_y - ONE]]
 
     def start_pos_rt(self):
         return self.start_pos
