@@ -8,6 +8,7 @@ from final import *
 from player import *
 
 num_exit = ZERO
+time_seconds = ZERO
 
 
 def save_game(enemy, player, img_kill, user_id):
@@ -52,7 +53,7 @@ def check_all_nulls():
 def main_play(running, user_id, player_pos=SPAWN_PLAYER, enemy_pos=SPAWN_ENEMY, play_nulls=True, total=ZERO, num=ZERO,
               dead=False,
               img_kill=False, img_fire=False, win=False, killing=False):
-    global num_exit
+    global num_exit, time_seconds
     pygame.init()
     screen = pygame.display.set_mode(RES)
     player, enemy, level_x, level_y = generate_level(load_level('map'))
@@ -84,12 +85,13 @@ def main_play(running, user_id, player_pos=SPAWN_PLAYER, enemy_pos=SPAWN_ENEMY, 
         screen.fill('Grey')
         if num_exit % BIG_ITERATION == ZERO and num_exit > BIG_ITERATION:
             pygame.display.flip()
+            print(time_seconds)
             running = False
             continue
         if bool(nulls) and player.get_pos() == nulls[ZERO] and play_nulls:
             dead = check_all_nulls()
             main_play(running, user_id, player.get_pos(), enemy.get_pos()[ZERO], play_nulls=False,
-                      img_kill=img_kill, img_fire=img_fire, killing=killing, total=total, num=num)
+                      img_kill=img_kill, img_fire=img_fire, killing=killing, total=total, num=num, dead=dead)
             running = False
             continue
         save_game(enemy, player, img_kill, user_id)
@@ -109,7 +111,8 @@ def main_play(running, user_id, player_pos=SPAWN_PLAYER, enemy_pos=SPAWN_ENEMY, 
         redraw_new_window(screen, dead, win, enemy, player, img_kill, user_id)
         total += ONE_ITERATION
         pygame.display.flip()
-        clock.tick(FPS)
+        time_millis = clock.tick(FPS)
+        time_seconds += time_millis / ITERATION_TICK
     save_game(enemy, player, img_kill, user_id)
     pygame.quit()
 
