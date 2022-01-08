@@ -90,6 +90,3 @@ def start_menu_game(running, user_id):
     main_play(flag, user_id)
     pygame.quit()
 
-
-main_account_screen()
-start_menu_game(True, num)
