@@ -9,15 +9,15 @@ level_map = []
 
 
 class MapEntryType(Enum):
-    MAP_EMPTY = 0,
-    MAP_BLOCK = 1,
+    MAP_EMPTY = ZERO,
+    MAP_BLOCK = ONE,
 
 
 class WallDirection(Enum):
-    WALL_LEFT = 0,
-    WALL_UP = 1,
-    WALL_RIGHT = 2,
-    WALL_DOWN = 3,
+    WALL_LEFT = ZERO,
+    WALL_UP = ONE,
+    WALL_RIGHT = TWO,
+    WALL_DOWN = ONE_OF_THREE,
 
 
 class Map:
@@ -45,27 +45,27 @@ class Map:
         for row in self.map:
             s = ''
             for entry in row:
-                if total == 26:
+                if total == LOCATION_KING:
                     s += '@'
-                elif total == 398:
+                elif total == LOCATION_CASTLE:
                     s += 'X'
-                elif total == 373:
+                elif total == LOCATION_FIRE_THREE:
                     s += 'F'
-                elif total == 397:
+                elif total == LOCATION_NULLS:
                     s += 'G'
-                elif total == 29:
+                elif total == LOCATION_FIRE_ONE:
                     s += 'F'
-                elif total == 77:
+                elif total == LOCATION_FIRE_TWO:
                     s += 'F'
-                elif total == 48:
+                elif total == LOCATION_ENEMY:
                     s += 'N'
-                elif entry == 0:
+                elif entry == LOCATION_HALL:
                     s += '.'
-                elif entry == 1:
+                elif entry == LOCATION_WALL:
                     s += 'T'
                 else:
                     s += '.'
-                total += 1
+                total += ONE_ITERATION
             level_map.append(s)
 
 
@@ -139,3 +139,4 @@ def run():
             file.write('\n')
     add_file_name(open_map())
     return level_map
+
