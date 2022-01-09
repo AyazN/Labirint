@@ -1,7 +1,7 @@
 import pygame
 import pygame as pg
-from registration import *
-from start import start_menu_game
+from ProjectLabirint.registration import *
+from ProjectLabirint.start import start_menu_game
 
 pygame.init()
 win = pygame.display.set_mode((800, 600))
