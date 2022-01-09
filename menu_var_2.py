@@ -123,9 +123,9 @@ while run:
         for row in records:
             prov_user.append(str(row[0]))
         if (len(passw) == 0 or len(login) == 0):
-            print(3)
+            print('empty str')
         elif login in prov_user:
-            print(2)
+            print('логин сошелся')
         else:
             random_id = random.randint(1000, 9999)
             sqlite_insert = '''INSERT INTO accounts
@@ -134,7 +134,7 @@ while run:
             data_tuple = (random_id, login, passw)
             cur.execute(sqlite_insert, data_tuple)
             con.commit()
-            print(1)
+            print('логин и пароль сошелся')
         while not done:
             font = pygame.font.Font(None, 50)
             text = font.render("Hello, Pygame!", True, pygame.Color('green'))
