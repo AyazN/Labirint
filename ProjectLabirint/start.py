@@ -1,10 +1,10 @@
 import pygame
-from settings import *
-from function_sql import *
-from main import main_play
-from gen_map import run
-from drawing_fon import draw_menu_fon
-from registration import *
+from ProjectLabirint.settings import *
+from ProjectLabirint.function_sql import *
+from ProjectLabirint.main import main_play
+from ProjectLabirint.gen_map import run
+from ProjectLabirint.drawing_fon import draw_menu_fon
+from ProjectLabirint.registration import *
 
 
 class Button:
@@ -89,4 +89,3 @@ def start_menu_game(running, user_id):
         pygame.display.flip()
     main_play(flag, user_id)
     pygame.quit()
-

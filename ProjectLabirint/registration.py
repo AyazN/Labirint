@@ -1,7 +1,7 @@
 import time
 import tkinter
 from tkinter import *
-from function_sql import *
+from ProjectLabirint.function_sql import *
 import sqlite3
 import random
 

@@ -1,8 +1,8 @@
 # сделал Мухаметзянов Дамир
 
-from settings import *
+from ProjectLabirint.settings import *
 from random import *
-from function_sql import *
+from ProjectLabirint.function_sql import *
 from enum import Enum
 
 level_map = []

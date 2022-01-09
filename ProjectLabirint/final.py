@@ -1,7 +1,7 @@
 # сделал Мухаметзянов Дамир
 
-from settings import *
-from player import *
+from ProjectLabirint.settings import *
+from ProjectLabirint.player import *
 import pygame
 
 all_sprites_new = pygame.sprite.Group()

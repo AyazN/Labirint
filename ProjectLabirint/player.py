@@ -1,7 +1,7 @@
 # сделал Мухаметзянов Дамир
 
 import random
-from settings import *
+from ProjectLabirint.settings import *
 import pygame
 import os
 import sys

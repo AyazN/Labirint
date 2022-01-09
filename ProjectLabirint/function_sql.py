@@ -1,7 +1,7 @@
 # Фазульзянов Амир
 
 import sqlite3
-from settings import *
+from ProjectLabirint.settings import *
 
 con = sqlite3.connect(NAME_DB)
 cur = con.cursor()

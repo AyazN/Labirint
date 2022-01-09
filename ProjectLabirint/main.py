@@ -1,11 +1,11 @@
 # сделал Мухаметзянов Дамир
 
-from function_sql import *
+from ProjectLabirint.function_sql import *
 import pygame
-from settings import *
-from mini_game import main_noughts_crosses
-from final import *
-from player import *
+from ProjectLabirint.settings import *
+from ProjectLabirint.mini_game import main_noughts_crosses
+from ProjectLabirint.final import *
+from ProjectLabirint.player import *
 
 num_exit = ZERO
 time_seconds = ZERO
