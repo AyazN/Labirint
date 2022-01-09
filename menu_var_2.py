@@ -1,6 +1,9 @@
+import time
+
 import pygame
 import pygame as pg
 from connect_db import *
+
 pygame.init()
 win = pygame.display.set_mode((800, 600))
 win.fill(pygame.Color('red'))
@@ -30,7 +33,8 @@ class InputBox:
             self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
         if event.type == pg.KEYDOWN:
             if self.active:
-                if event.key == pg.K_RETURN: pass
+                if event.key == pg.K_RETURN:
+                    pass
                 elif event.key == pg.K_BACKSPACE:
                     self.text = self.text[:-1]
                 else:
@@ -38,11 +42,11 @@ class InputBox:
                 self.txt_surface = FONT.render(self.text, True, self.color)
 
     def update(self):
-        width = max(200, self.txt_surface.get_width()+10)
+        width = max(200, self.txt_surface.get_width() + 10)
         self.rect.w = width
 
     def draw(self, screen):
-        screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
+        screen.blit(self.txt_surface, (self.rect.x + 5, self.rect.y + 5))
         pg.draw.rect(screen, self.color, self.rect, 2)
 
 
@@ -111,33 +115,23 @@ while run:
         clock = pg.time.Clock()
         input_box1 = InputBox(300, 200, 140, 32)
         input_box2 = InputBox(300, 300, 140, 32)
+        myfont = pygame.font.SysFont('Comic Sans MS', 30)
+        myfont_1 = pygame.font.SysFont('Comic Sans MS', 30)
+        textsurface = myfont.render('Логин', False, pygame.Color('white'))
+        textsurface_1 = myfont_1.render('Пароль', False, pygame.Color('white'))
         go_but = Button(pygame.Color('red'), 170, 350, 450, 90, "Регистрация")
         input_boxes = [input_box1, input_box2]
         done = False
         login = input_box1.text
         passw = input_box2.text
         prov_user = []
+        flag = 0
+        flag_1 = 0
+        flag_2 = 0
         check_username = '''SELECT login from accounts'''
         cur.execute(check_username)
         records = cur.fetchall()
-        for row in records:
-            prov_user.append(str(row[0]))
-        if (len(passw) == 0 or len(login) == 0):
-            print('empty str')
-        elif login in prov_user:
-            print('логин сошелся')
-        else:
-            random_id = random.randint(1000, 9999)
-            sqlite_insert = '''INSERT INTO accounts
-                               (id, login, password)
-                               VALUES (?, ?, ?);'''
-            data_tuple = (random_id, login, passw)
-            cur.execute(sqlite_insert, data_tuple)
-            con.commit()
-            print('логин и пароль сошелся')
         while not done:
-            font = pygame.font.Font(None, 50)
-            text = font.render("Hello, Pygame!", True, pygame.Color('green'))
             for event in pg.event.get():
                 pos = pygame.mouse.get_pos()
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -150,10 +144,12 @@ while run:
                             prov_user.append(str(row[0]))
                         login = input_box1.text
                         passw = input_box2.text
-                        if (len(passw) == 0 or len(login) == 0):
+                        if len(passw) == 0 or len(login) == 0:
+                            flag = True
                             print('empty str')
                         elif login in prov_user:
                             print('have user with this login')
+                            flag_1 = True
                         else:
                             random_id = random.randint(1000, 9999)
                             sqlite_insert = '''INSERT INTO accounts
@@ -162,6 +158,7 @@ while run:
                             data_tuple = (random_id, login, passw)
                             cur.execute(sqlite_insert, data_tuple)
                             con.commit()
+                            flag_2 = True
                             print('OK')
 
                 if event.type == pg.QUIT:
@@ -180,6 +177,24 @@ while run:
             for box in input_boxes:
                 box.draw(win)
                 go_but.draw(win, (0, 0, 0))
+                win.blit(textsurface, (355, 150))
+                win.blit(textsurface_1, (355, 250))
+                text_quk = ''
+                x,y=0,0
+                text_quk_23 = 'пустая строка'
+                text_quk_1 = 'такой пользователь существует'
+                text_quk_2 = 'УСПЕШНО'
+                if flag_1:
+                    text_quk = text_quk_1
+                if flag:
+                    text_quk = text_quk_23
+                if flag_2:
+                    text_quk = text_quk_2
+                    run = False
+                myfont_2 = pygame.font.SysFont('Comic Sans MS', 30)
+                textsurface_2 = myfont_2.render(text_quk, False, pygame.Color('red'))
+                win.blit(textsurface_2, (x, y))
+
             pg.display.flip()
             clock.tick(30)
             run = False
@@ -189,9 +204,20 @@ while run:
         clock = pg.time.Clock()
         input_box1 = InputBox(300, 200, 140, 32)
         input_box2 = InputBox(300, 300, 140, 32)
+        myfont = pygame.font.SysFont('Comic Sans MS', 30)
+        myfont_1 = pygame.font.SysFont('Comic Sans MS', 30)
+        textsurface = myfont.render('Логин', False, pygame.Color('white'))
+        textsurface_1 = myfont_1.render('Пароль', False, pygame.Color('white'))
         go_but = Button(pygame.Color('red'), 170, 350, 450, 90, "Вход")
         input_boxes = [input_box1, input_box2]
         done = False
+        flag = 0
+        flag_1 = 0
+        flag_2 = 0
+        flag_0 = 0
+        flag_10 = 0
+        x = 0
+        y = 0
         while not done:
             for event in pg.event.get():
                 pos = pygame.mouse.get_pos()
@@ -211,13 +237,19 @@ while run:
                             prov_user.append(str(row[0]))
                         for row_1 in records_1:
                             prov_pass.append(str(row_1[0]))
-                        if login in prov_user:
-                            if passw in prov_pass:
-                                print('correct')
-                            else:
-                                print('not correct pass')
+                        if len(login) == 0 or len(passw)== 0:
+                            flag_0 = True
                         else:
-                            print('user not found')
+                            if login in prov_user:
+                                if passw in prov_pass:
+                                    flag = True
+                                    print('correct')
+                                else:
+                                    flag_1 = True
+                                    print('not correct pass')
+                            else:
+                                flag_2 = True
+                                print('user not found')
                 if event.type == pg.QUIT:
                     done = True
                 for box in input_boxes:
@@ -235,8 +267,25 @@ while run:
             for box in input_boxes:
                 box.draw(win)
                 go_but.draw(win, (0, 0, 0))
-            else:
-                pass
+                win.blit(textsurface, (355, 150))
+                win.blit(textsurface_1, (355, 250))
+                text_quk = ''
+                text_quk_23 = 'успешно'
+                text_quk_1 = 'неправильный пароль'
+                text_quk_2 = 'игрок не найден'
+                text_quk_3 = 'пустая строка'
+                if flag_0:
+                    text_quk = text_quk_3
+                if flag_1:
+                    text_quk = text_quk_1
+                if flag_2:
+                    text_quk = text_quk_2
+                if flag:
+                    text_quk = text_quk_23
+                    run = False
+                myfont_2 = pygame.font.SysFont('Comic Sans MS', 30)
+                textsurface_2 = myfont_2.render(text_quk, False, pygame.Color('red'))
+                win.blit(textsurface_2, (x, y))
             pg.display.flip()
             clock.tick()
             run = False
